@@ -1,4 +1,10 @@
-import { atom, atomFamily, useRecoilCallback, useRecoilValue } from "recoil";
+import {
+  atom,
+  atomFamily,
+  selector,
+  useRecoilCallback,
+  useRecoilValue,
+} from "recoil";
 
 export const Todos = atomFamily({
   key: "Todos",
@@ -10,6 +16,12 @@ export const TodoIds = atom({
   default: [],
 });
 
+export const UpdateSingleTodo = selector({
+  key: "UpdateTodoById",
+  get: () => undefined, // Không dùng đến, nhưng buộc p có
+  set: ({ set }, newTodo) => set(Todos(newTodo.id), newTodo),
+});
+
 const Button = () => {
   const items = [
     { id: 1, content: "foo" },
@@ -17,7 +29,7 @@ const Button = () => {
   ];
 
   const onClick = useRecoilCallback(({ set }) => () => {
-    items.forEach((item) => set(Todos(item.id), item));
+    items.forEach((item) => set(UpdateSingleTodo, item));
     set(
       TodoIds,
       items.map((item) => item.id)
